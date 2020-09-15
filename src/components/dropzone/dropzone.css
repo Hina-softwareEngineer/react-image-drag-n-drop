@@ -34,3 +34,46 @@
   font-family: Arial;
   font-size: 20px;
 }
+
+.progress-container {
+  background: white;
+  width: 500px;
+  height: 300px;
+  position: absolute;
+  top: 150%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  overflow: hidden;
+}
+
+.progress-container span {
+  display: flex;
+  justify-content: center;
+  padding-top: 20px;
+  font-size: 20px;
+}
+
+.progress {
+  width: 90%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #efefef;
+  height: 20px;
+  border-radius: 5px;
+}
+
+.progress-bar {
+  position: absolute;
+  background-color: #4aa1f3;
+  height: 20px;
+  border-radius: 5px;
+  text-align: center;
+  color: white;
+  font-weight: bold;
+}
+
+.error {
+  color: red;
+}

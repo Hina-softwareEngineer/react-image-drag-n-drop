@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
+import axios from "axios";
 import "./dropzone.css";
 
 const DropZone = () => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
+  const uploadRef = useRef();
+  const progressRef = useRef();
 
   const dragOver = (e) => {
     e.preventDefault();
@@ -27,18 +30,19 @@ const DropZone = () => {
   };
 
   const handleFiles = (files) => {
-    for (let i = 0; i < files.length; i++) {
-      if (validateFile(files[i])) {
-        setSelectedFiles((prevArray) => [...prevArray, files[i]]);
-        // add to an array so we can display the name of file
-      } else {
-        // add a new property called invalid
-        // add to the same array so we can display the name of the file
-        // set error message
-        files[i]["invalid"] = true;
-        setErrorMessage("File type not permitted");
-      }
-    }
+    setSelectedFiles(files);
+    //for (let i = 0; i < files.length; i++) {
+    //   if (validateFile(files[i])) {
+    //     setSelectedFiles((prevArray) => [...prevArray, files[i]]);
+    //     // add to an array so we can display the name of file
+    //   } else {
+    //     // add a new property called invalid
+    //     // add to the same array so we can display the name of the file
+    //     // set error message
+    //     files[i]["invalid"] = true;
+    //     setErrorMessage("File type not permitted");
+    //   }
+    // }
   };
 
   const validateFile = (file) => {
@@ -55,6 +59,35 @@ const DropZone = () => {
     return true;
   };
 
+  const uploadFiles = () => {
+    console.log("selected file", selectedFiles);
+    uploadRef.current.innerHTML = "File(s) Uploading...";
+    axios
+      .post("http://localhost:4000/upload", selectedFiles[0], {
+        onUploadProgress: (progressEvent) => {
+          console.log(progressEvent);
+          const uploadPercentage = Math.floor(
+            (progressEvent.loaded / progressEvent.total) * 100
+          );
+          progressRef.current.innerHTML = `${uploadPercentage}%`;
+          progressRef.current.style.width = `${uploadPercentage}%`;
+          if (uploadPercentage === 100) {
+            uploadRef.current.innerHTML = "File(s) Uploaded";
+
+            // setValidFiles([...validFiles]);
+            setSelectedFiles([selectedFiles]);
+            // setUnsupportedFiles([...validFiles]);
+          }
+        },
+      })
+      .catch(() => {
+        // If error, display a message on the upload modal
+        uploadRef.current.innerHTML = `<span class="error">Error Uploading File(s)</span>`;
+        // set progress bar background color to red
+        progressRef.current.style.backgroundColor = "red";
+      });
+  };
+
   return (
     <div className="container">
       <div
@@ -67,6 +100,20 @@ const DropZone = () => {
         <div className="drop-message">
           <div className="upload-icon"></div>
           Drag & Drop files here or click to upload
+        </div>
+      </div>
+
+      <button onClick={uploadFiles} className="file-upload-btn">
+        Upload your image
+      </button>
+
+      <div className="upload-modal">
+        Loading...
+        <div className="progress-container">
+          <span ref={uploadRef}></span>
+          <div className="progress">
+            <div className="progress-bar" ref={progressRef}></div>
+          </div>
         </div>
       </div>
     </div>
