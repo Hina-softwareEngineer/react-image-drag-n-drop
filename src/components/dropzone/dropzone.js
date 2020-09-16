@@ -62,8 +62,14 @@ const DropZone = () => {
   const uploadFiles = () => {
     console.log("selected file", selectedFiles);
     uploadRef.current.innerHTML = "File(s) Uploading...";
+    let data = {
+      myImage: selectedFiles[0],
+    };
+    const formData = new FormData();
+    formData.append("myImage", selectedFiles[0]);
+    console.log("data ", data);
     axios
-      .post("http://localhost:4000/upload", selectedFiles[0], {
+      .post("http://localhost:4000/upload", formData, {
         onUploadProgress: (progressEvent) => {
           console.log(progressEvent);
           const uploadPercentage = Math.floor(
@@ -80,6 +86,7 @@ const DropZone = () => {
           }
         },
       })
+      .then((res) => console.log("successfully submitted"))
       .catch(() => {
         // If error, display a message on the upload modal
         uploadRef.current.innerHTML = `<span class="error">Error Uploading File(s)</span>`;
