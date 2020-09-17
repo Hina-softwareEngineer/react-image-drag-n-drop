@@ -1,10 +1,12 @@
 import React, { useState, useRef } from "react";
 import axios from "axios";
 import "./dropzone.css";
+import FileBase from "react-file-base64";
 
 const DropZone = () => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
+  let [image64, setImage64] = useState(null);
   const uploadRef = useRef();
   const progressRef = useRef();
 
@@ -23,10 +25,26 @@ const DropZone = () => {
   const imageDrop = (e) => {
     e.preventDefault();
     const files = e.dataTransfer.files;
+    getBase64(files, (result) => {
+      console.log(result, "base64 image of me");
+      setImage64(result);
+    });
     console.log(files);
     if (files.length) {
       handleFiles(files);
     }
+  };
+
+  const getBase64 = (file, cb) => {
+    let reader = new FileReader();
+    console.log("get base 64 file", file[0]);
+    reader.readAsDataURL(file[0]);
+    reader.onload = function () {
+      cb(reader.result);
+    };
+    reader.onerror = function (error) {
+      console.log("Error while converting.");
+    };
   };
 
   const handleFiles = (files) => {
@@ -68,8 +86,12 @@ const DropZone = () => {
     const formData = new FormData();
     formData.append("myImage", selectedFiles[0]);
     console.log("data ", data);
+    let imageObj = {
+      imageName: "base-image-" + Date.now(),
+      imageData: image64,
+    };
     axios
-      .post("http://localhost:4000/upload", formData, {
+      .post("http://localhost:4000/uploadbase", imageObj, {
         onUploadProgress: (progressEvent) => {
           console.log(progressEvent);
           const uploadPercentage = Math.floor(
@@ -81,12 +103,17 @@ const DropZone = () => {
             uploadRef.current.innerHTML = "File(s) Uploaded";
 
             // setValidFiles([...validFiles]);
-            setSelectedFiles([selectedFiles]);
+            // setSelectedFiles([selectedFiles]);
             // setUnsupportedFiles([...validFiles]);
           }
         },
       })
-      .then((res) => console.log("successfully submitted"))
+      .then((res) => {
+        console.log("successfully submitted", res);
+
+        console.log("response", res.data.newImage.imageData);
+        setImage64(res.data.newImage.imageData);
+      })
       .catch(() => {
         // If error, display a message on the upload modal
         uploadRef.current.innerHTML = `<span class="error">Error Uploading File(s)</span>`;
@@ -123,6 +150,7 @@ const DropZone = () => {
           </div>
         </div>
       </div>
+      <img src={image64} alt="hello" />
     </div>
   );
 };
