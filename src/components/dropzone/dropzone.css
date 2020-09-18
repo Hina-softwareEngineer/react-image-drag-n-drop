@@ -1,4 +1,10 @@
-.container {
+.drop-container {
+  height: 300px;
+  background-color: #e0e0e0;
+  border: 2px dashed #aeaeae;
+}
+
+/* .container {
   transform: translateY(-100%);
 }
 
@@ -76,4 +82,4 @@
 
 .error {
   color: red;
-}
+} */

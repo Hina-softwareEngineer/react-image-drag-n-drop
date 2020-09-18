@@ -1,7 +1,11 @@
 import React, { useState, useRef } from "react";
 import axios from "axios";
 import "./dropzone.css";
-import FileBase from "react-file-base64";
+
+import { makeStyles } from "@material-ui/core/styles";
+import Button from "@material-ui/core/Button";
+import CloudUploadIcon from "@material-ui/icons/CloudUpload";
+import InsertPhotoIcon from "@material-ui/icons/InsertPhoto";
 
 const DropZone = () => {
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -124,7 +128,28 @@ const DropZone = () => {
 
   return (
     <div className="container">
-      <div
+      <div className="drop-container">
+        <div className="drop-container-content">
+          <span>
+            <InsertPhotoIcon />
+          </span>
+
+          <p>Drop &amp; Drop your Image here</p>
+        </div>
+      </div>
+
+      <p>Or</p>
+
+      <div>
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<CloudUploadIcon />}
+        >
+          Upload
+        </Button>
+      </div>
+      {/* <div
         className="drop-container"
         onDragOver={dragOver}
         onDragEnter={dragEnter}
@@ -150,7 +175,7 @@ const DropZone = () => {
           </div>
         </div>
       </div>
-      <img src={image64} alt="hello" />
+      <img src={image64} alt="hello" /> */}
     </div>
   );
 };
