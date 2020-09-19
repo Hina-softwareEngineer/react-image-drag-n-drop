@@ -6,6 +6,27 @@ import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import InsertPhotoIcon from "@material-ui/icons/InsertPhoto";
+import LinearProgress from "@material-ui/core/LinearProgress";
+
+import Backdrop from "@material-ui/core/Backdrop";
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    "& > *": {
+      margin: theme.spacing(1),
+    },
+  },
+  buttonColor: {
+    backgroundColor: "#1976d2",
+    "&:hover": {
+      backgroundColor: "#1976d2",
+    },
+  },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: "#fff",
+  },
+}));
 
 const DropZone = () => {
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -13,6 +34,15 @@ const DropZone = () => {
   let [image64, setImage64] = useState(null);
   const uploadRef = useRef();
   const progressRef = useRef();
+  const classes = useStyles();
+
+  const [open, setOpen] = React.useState(false);
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleToggle = () => {
+    setOpen(!open);
+  };
 
   const dragOver = (e) => {
     e.preventDefault();
@@ -134,7 +164,7 @@ const DropZone = () => {
             <InsertPhotoIcon />
           </span>
 
-          <p>Drop &amp; Drop your Image here</p>
+          <p>Drag &amp; Drop your Image here</p>
         </div>
       </div>
 
@@ -144,10 +174,25 @@ const DropZone = () => {
         <Button
           variant="contained"
           color="primary"
+          className={classes.buttonColor}
           startIcon={<CloudUploadIcon />}
         >
           Upload
         </Button>
+
+        <Button variant="outlined" color="primary" onClick={handleToggle}>
+          Show backdrop
+        </Button>
+        <Backdrop
+          className={classes.backdrop}
+          open={open}
+          onClick={handleClose}
+        >
+          <div>
+            <h4>Loading...</h4>
+            <LinearProgress value={100} />
+          </div>
+        </Backdrop>
       </div>
       {/* <div
         className="drop-container"
