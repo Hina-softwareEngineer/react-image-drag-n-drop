@@ -17,6 +17,19 @@
   color: #757575;
 }
 
+.backdrop-card {
+  background: #fff;
+  width: 400px;
+  border-radius: 10px;
+  padding: 20px 40px;
+  height: 200px;
+}
+
+.backdrop-card > h4 {
+  color: #000;
+  margin-top: 15%;
+}
+
 /* .container {
   transform: translateY(-100%);
 }

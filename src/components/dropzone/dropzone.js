@@ -188,7 +188,7 @@ const DropZone = () => {
           open={open}
           onClick={handleClose}
         >
-          <div>
+          <div className="backdrop-card">
             <h4>Loading...</h4>
             <LinearProgress value={100} />
           </div>
