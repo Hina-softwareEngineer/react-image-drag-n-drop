@@ -31,6 +31,7 @@ const useStyles = makeStyles((theme) => ({
 const DropZone = () => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
+  let [progress, setProgress] = useState(0);
   let [image64, setImage64] = useState(null);
   const uploadRef = useRef();
   const progressRef = useRef();
@@ -113,7 +114,6 @@ const DropZone = () => {
 
   const uploadFiles = () => {
     console.log("selected file", selectedFiles);
-    uploadRef.current.innerHTML = "File(s) Uploading...";
     let data = {
       myImage: selectedFiles[0],
     };
@@ -127,19 +127,21 @@ const DropZone = () => {
     axios
       .post("http://localhost:4000/uploadbase", imageObj, {
         onUploadProgress: (progressEvent) => {
-          console.log(progressEvent);
           const uploadPercentage = Math.floor(
             (progressEvent.loaded / progressEvent.total) * 100
           );
-          progressRef.current.innerHTML = `${uploadPercentage}%`;
-          progressRef.current.style.width = `${uploadPercentage}%`;
-          if (uploadPercentage === 100) {
-            uploadRef.current.innerHTML = "File(s) Uploaded";
+          console.log("handle close123");
 
-            // setValidFiles([...validFiles]);
-            // setSelectedFiles([selectedFiles]);
-            // setUnsupportedFiles([...validFiles]);
+          if (uploadPercentage >= 100) {
+            handleClose();
+          } else {
+            console.log("handle close");
+            setTimeout(() => {
+              handleClose();
+              console.log("handle closed has been successfull");
+            }, 10000);
           }
+          setProgress(uploadPercentage);
         },
       })
       .then((res) => {
@@ -149,16 +151,26 @@ const DropZone = () => {
         setImage64(res.data.newImage.imageData);
       })
       .catch(() => {
+        setTimeout(() => {
+          handleClose();
+          console.log("error has been successfull");
+        }, 10000);
         // If error, display a message on the upload modal
-        uploadRef.current.innerHTML = `<span class="error">Error Uploading File(s)</span>`;
-        // set progress bar background color to red
-        progressRef.current.style.backgroundColor = "red";
+        // uploadRef.current.innerHTML = `<span class="error">Error Uploading File(s)</span>`;
+        // // set progress bar background color to red
+        // progressRef.current.style.backgroundColor = "red";
       });
   };
 
   return (
     <div className="container">
-      <div className="drop-container">
+      <div
+        className="drop-container"
+        onDragOver={dragOver}
+        onDragEnter={dragEnter}
+        onDragLeave={dragLeave}
+        onDrop={imageDrop}
+      >
         <div className="drop-container-content">
           <span>
             <InsertPhotoIcon />
@@ -168,12 +180,16 @@ const DropZone = () => {
         </div>
       </div>
 
-      <p>Or</p>
+      {/* <p>Or</p> */}
 
       <div>
         <Button
           variant="contained"
           color="primary"
+          onClick={() => {
+            uploadFiles();
+            handleToggle();
+          }}
           className={classes.buttonColor}
           startIcon={<CloudUploadIcon />}
         >
@@ -190,7 +206,7 @@ const DropZone = () => {
         >
           <div className="backdrop-card">
             <h4>Loading...</h4>
-            <LinearProgress value={100} />
+            <LinearProgress value={progress} />
           </div>
         </Backdrop>
       </div>
