@@ -33,8 +33,6 @@ const DropZone = () => {
   const [errorMessage, setErrorMessage] = useState("");
   let [progress, setProgress] = useState(0);
   let [image64, setImage64] = useState(null);
-  const uploadRef = useRef();
-  const progressRef = useRef();
   const classes = useStyles();
 
   const [open, setOpen] = React.useState(false);
@@ -84,18 +82,6 @@ const DropZone = () => {
 
   const handleFiles = (files) => {
     setSelectedFiles(files);
-    //for (let i = 0; i < files.length; i++) {
-    //   if (validateFile(files[i])) {
-    //     setSelectedFiles((prevArray) => [...prevArray, files[i]]);
-    //     // add to an array so we can display the name of file
-    //   } else {
-    //     // add a new property called invalid
-    //     // add to the same array so we can display the name of the file
-    //     // set error message
-    //     files[i]["invalid"] = true;
-    //     setErrorMessage("File type not permitted");
-    //   }
-    // }
   };
 
   const validateFile = (file) => {
@@ -138,7 +124,7 @@ const DropZone = () => {
             console.log("handle close");
             setTimeout(() => {
               handleClose();
-              console.log("handle closed has been successfull");
+              setErrorMessage("Network Error.");
             }, 10000);
           }
           setProgress(uploadPercentage);
@@ -155,10 +141,6 @@ const DropZone = () => {
           handleClose();
           console.log("error has been successfull");
         }, 10000);
-        // If error, display a message on the upload modal
-        // uploadRef.current.innerHTML = `<span class="error">Error Uploading File(s)</span>`;
-        // // set progress bar background color to red
-        // progressRef.current.style.backgroundColor = "red";
       });
   };
 
@@ -179,8 +161,6 @@ const DropZone = () => {
           <p>Drag &amp; Drop your Image here</p>
         </div>
       </div>
-
-      {/* <p>Or</p> */}
 
       <div>
         <Button
@@ -210,33 +190,6 @@ const DropZone = () => {
           </div>
         </Backdrop>
       </div>
-      {/* <div
-        className="drop-container"
-        onDragOver={dragOver}
-        onDragEnter={dragEnter}
-        onDragLeave={dragLeave}
-        onDrop={imageDrop}
-      >
-        <div className="drop-message">
-          <div className="upload-icon"></div>
-          Drag & Drop files here or click to upload
-        </div>
-      </div>
-
-      <button onClick={uploadFiles} className="file-upload-btn">
-        Upload your image
-      </button>
-
-      <div className="upload-modal">
-        Loading...
-        <div className="progress-container">
-          <span ref={uploadRef}></span>
-          <div className="progress">
-            <div className="progress-bar" ref={progressRef}></div>
-          </div>
-        </div>
-      </div>
-      <img src={image64} alt="hello" /> */}
     </div>
   );
 };
