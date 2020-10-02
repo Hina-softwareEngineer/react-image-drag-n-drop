@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const DropZone = () => {
+const DropZone = (props) => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   let [progress, setProgress] = useState(0);
@@ -110,6 +110,11 @@ const DropZone = () => {
       imageName: "base-image-" + Date.now(),
       imageData: image64,
     };
+
+    if (!data.myImage) { 
+      console.log("image select first");
+    }
+    props.uploadedImageFile(image64);
     axios
       .post("http://localhost:4000/uploadbase", imageObj, {
         onUploadProgress: (progressEvent) => {
@@ -120,6 +125,7 @@ const DropZone = () => {
 
           if (uploadPercentage >= 100) {
             handleClose();
+            props.uploadSuccess();
           } else {
             console.log("handle close");
             setTimeout(() => {
@@ -142,6 +148,8 @@ const DropZone = () => {
           console.log("error has been successfull");
         }, 10000);
       });
+    
+      props.uploadSuccess();
   };
 
   return (

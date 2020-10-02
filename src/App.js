@@ -11,9 +11,11 @@ function Alert(props) {
 function App() {
   let [isUploaded, setIsUploaded] = useState(false);
   const [open, setOpen] = React.useState(false);
+  let [uploadedFile, setUploadedFile] = useState(null);
 
   const uploadSuccess = () => {
     setIsUploaded(true);
+    console.log("uploaded");
   };
 
   const handleClickAlert = () => {
@@ -28,6 +30,11 @@ function App() {
     setOpen(false);
   };
 
+  const uploadedImageFile = (img64) => {
+    setUploadedFile(img64);
+  }
+
+
   return (
     <div className="App">
       {isUploaded ? (
@@ -37,7 +44,7 @@ function App() {
           <h4>Uploaded Successfully!</h4>
 
           <div className="uploaded-image-container">
-            <img src="" alt="your uploaded image" />
+            <img src={uploadedFile} alt="your uploaded image" />
           </div>
         </div>
       ) : (
@@ -46,11 +53,11 @@ function App() {
           <p>File should be any Image</p>
 
           <div className="content">
-            <DropZone uploadSuccess={uploadSuccess} />
+              <DropZone uploadSuccess={uploadSuccess} uploadedImageFile={uploadedImageFile} />
           </div>
         </div>
       )}
-      <Snackbar open={open} autoHideDuration={6000} onClose={handleCloseAlert}>
+      {/* <Snackbar open={open} autoHideDuration={6000} onClose={handleCloseAlert}>
         <Alert onClose={handleCloseAlert} severity="success">
           This is a success message!
         </Alert>
@@ -58,7 +65,7 @@ function App() {
       <Alert severity="error">This is an error message!</Alert>
       <Alert severity="warning">This is a warning message!</Alert>
       <Alert severity="info">This is an information message!</Alert>
-      <Alert severity="success">This is a success message!</Alert>
+      <Alert severity="success">This is a success message!</Alert> */}
     </div>
   );
 }
