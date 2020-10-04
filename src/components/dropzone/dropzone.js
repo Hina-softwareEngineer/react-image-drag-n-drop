@@ -32,6 +32,7 @@ const DropZone = (props) => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   let [progress, setProgress] = useState(0);
+  let [imageOriginal, setImage] = useState(0);
   let [image64, setImage64] = useState(null);
   const classes = useStyles();
 
@@ -58,14 +59,23 @@ const DropZone = (props) => {
   const imageDrop = (e) => {
     e.preventDefault();
     const files = e.dataTransfer.files;
-    getBase64(files, (result) => {
-      console.log(result, "base64 image of me");
-      setImage64(result);
-    });
-    console.log(files);
-    if (files.length) {
-      handleFiles(files);
+    let checkFile = validateFile(files[0]);
+    // console.log("file : ", files[0]);
+    if (checkFile) {
+      console.log("file is image");
+      getBase64(files, (result) => {
+        // console.log(result, "base64 image of me");
+        setImage64(result);
+      });
+      console.log(files);
+      if (files.length) {
+        handleFiles(files);
+      }
     }
+    else { 
+      console.log("not a file");
+    }
+    
   };
 
   const getBase64 = (file, cb) => {
@@ -149,7 +159,7 @@ const DropZone = (props) => {
         }, 10000);
       });
     
-      props.uploadSuccess();
+      // props.uploadSuccess();
   };
 
   return (
@@ -162,15 +172,20 @@ const DropZone = (props) => {
         onDrop={imageDrop}
       >
         <div className="drop-container-content">
-          <span>
+          {
+            image64 ? <>
+              <img src={image64} alt="your uploaded image" />
+            </> : <>
+            <span>
             <InsertPhotoIcon />
           </span>
 
-          <p>Drag &amp; Drop your Image here</p>
+          <p>Drag &amp; Drop your Image here</p></>
+          }
         </div>
       </div>
 
-      <div>
+      <div className='buttons'>
         <Button
           variant="contained"
           color="primary"
@@ -184,9 +199,9 @@ const DropZone = (props) => {
           Upload
         </Button>
 
-        <Button variant="outlined" color="primary" onClick={handleToggle}>
+        {/* <Button variant="outlined" color="primary" onClick={handleToggle}>
           Show backdrop
-        </Button>
+        </Button> */}
         <Backdrop
           className={classes.backdrop}
           open={open}
