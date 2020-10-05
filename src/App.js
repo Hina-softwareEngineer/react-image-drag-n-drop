@@ -37,6 +37,7 @@ function App() {
 
   return (
     <div className="App">
+      {/* <img style={{ width: '90vw', height: '90vh' }} src="https://web-and-mobileapps.web.app/Images/abc3.jpg" loading="lazy" alt="alter text"/> */}
       {isUploaded ? (
         <div className="image-upload-card uploaded-card">
           <CheckIcon className="check-icon" />
